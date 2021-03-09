@@ -5,6 +5,7 @@ import static android.opengl.GLES20.GL_FRAGMENT_SHADER;
 import static android.opengl.GLES20.GL_LINK_STATUS;
 import static android.opengl.GLES20.GL_VALIDATE_STATUS;
 import static android.opengl.GLES20.GL_VERTEX_SHADER;
+import static android.opengl.GLES20.glAttachShader;
 import static android.opengl.GLES20.glCompileShader;
 import static android.opengl.GLES20.glCreateProgram;
 import static android.opengl.GLES20.glCreateShader;
@@ -60,8 +61,12 @@ public class ShaderHelper {
         if (programObjectId == 0) {
             Log.w(TAG, "linkProgram: Could not create new program");
         }
+        // 附加上着色器
+        glAttachShader(programObjectId, vertexShaderId);
+        glAttachShader(programObjectId, fragmentShaderId);
 
         glLinkProgram(programObjectId);
+
         final int[] linkStatus = new int[1];
         glGetProgramiv(programObjectId, GL_LINK_STATUS, linkStatus, 0);
         Log.i(TAG, "linkProgram: Results of linking program : " + glGetProgramInfoLog(programObjectId));
@@ -70,6 +75,7 @@ public class ShaderHelper {
             Log.e(TAG, "linkProgram: Linking of program failed");
             return 0;
         }
+
         return programObjectId;
     }
 

@@ -2,9 +2,15 @@ package com.byteflow.app.qingqi_study;
 
 import static android.opengl.GLES20.GL_COLOR_BUFFER_BIT;
 import static android.opengl.GLES20.GL_FLOAT;
+import static android.opengl.GLES20.GL_LINES;
+import static android.opengl.GLES20.GL_POINTS;
+import static android.opengl.GLES20.GL_TRIANGLES;
 import static android.opengl.GLES20.glClear;
+import static android.opengl.GLES20.glDrawArrays;
+import static android.opengl.GLES20.glEnableVertexAttribArray;
 import static android.opengl.GLES20.glGetAttribLocation;
 import static android.opengl.GLES20.glGetUniformLocation;
+import static android.opengl.GLES20.glUniform4f;
 import static android.opengl.GLES20.glUseProgram;
 import static android.opengl.GLES20.glVertexAttribPointer;
 import static android.opengl.GLES20.glViewport;
@@ -40,13 +46,28 @@ public class AirHockeyRender implements GLSurfaceView.Renderer {
         // 无论任何时候，如果我们想要表示一个openGL中的物体，都要考虑如何用点，直线以及三角形表示
         float[] tableVertices = {
                 // 三角形的卷曲顺序，逆时针
-                0f, 0f,
-                9f, 14f,
-                0f, 14f,
+                -0.5f, -0.5f,
+                0.5f, 0.5f,
+                -0.5f, 0.5f,
 
-                0f, 0f,
-                9f, 0f,
-                9f, 14f
+                -0.5f, -0.5f,
+                0.5f, -0.5f,
+                0.5f, 0.5f,
+
+                -0.5f, 0f,
+                0.5f, 0f,
+
+                0f, -0.25f,
+                0f, 0.25f,
+
+                // 三角形的卷曲顺序，逆时针
+                -0.53f, -0.53f,
+                0.53f, 0.53f,
+                -0.53f, 0.53f,
+
+                -0.53f, -0.53f,
+                0.53f, -0.53f,
+                0.53f, 0.53f
         };
 
         vertexData = ByteBuffer.allocateDirect(tableVertices.length * BYTES_PER_FLOAT).order(
@@ -57,7 +78,7 @@ public class AirHockeyRender implements GLSurfaceView.Renderer {
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-        gl.glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
+        gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         String vertexShaderResource = TextResourceReader.readTextFileFromResource(mContext, R.raw.simple_vertex_shader);
         String fragmentShaderResource = TextResourceReader.readTextFileFromResource(mContext, R.raw.simple_fragment_shader);
 
@@ -74,8 +95,10 @@ public class AirHockeyRender implements GLSurfaceView.Renderer {
         aPositionLocation = glGetAttribLocation(mProgram, A_POSITION);
 
         vertexData.position(0);
-
+// 关联属性和顶点数据的数组
         glVertexAttribPointer(aPositionLocation, POSITION_COMPONENT_COUNT, GL_FLOAT, false, 0, vertexData);
+// openGL知道去哪里找数据
+        glEnableVertexAttribArray(aPositionLocation);
 
     }
 
@@ -87,6 +110,23 @@ public class AirHockeyRender implements GLSurfaceView.Renderer {
     @Override
     public void onDrawFrame(GL10 gl) {
         glClear(GL_COLOR_BUFFER_BIT);
+
+        glUniform4f(uColorLocation, 0.0f, 1.0f, 0.0f, 1.0f);
+        glDrawArrays(GL_TRIANGLES, 10,6);
+
+        glUniform4f(uColorLocation, 1.0f, 1.0f, 1.0f, 1.0f);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+
+        glUniform4f(uColorLocation, 1.0f, 0.0f, 0.0f, 1.0f);
+        glDrawArrays(GL_LINES, 6, 2);
+
+        glUniform4f(uColorLocation, 0.0f, 0.0f, 1.0f, 1.0f);
+        glDrawArrays(GL_POINTS, 8, 1);
+
+        glUniform4f(uColorLocation, 1.0f, 0.0f, 0.0f, 1.0f);
+        glDrawArrays(GL_POINTS, 9, 1);
+
+
     }
 }
 
