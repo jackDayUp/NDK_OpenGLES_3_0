@@ -12,12 +12,14 @@ import static android.opengl.GLES20.glEnableVertexAttribArray;
 import static android.opengl.GLES20.glGetAttribLocation;
 import static android.opengl.GLES20.glGetUniformLocation;
 import static android.opengl.GLES20.glUniform4f;
+import static android.opengl.GLES20.glUniformMatrix4fv;
 import static android.opengl.GLES20.glUseProgram;
 import static android.opengl.GLES20.glVertexAttribPointer;
 import static android.opengl.GLES20.glViewport;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
+import android.opengl.Matrix;
 
 import com.byteflow.app.R;
 import com.byteflow.app.qingqi_study.util.ShaderHelper;
@@ -35,6 +37,7 @@ public class AirHockeyRender implements GLSurfaceView.Renderer {
     public static final int BYTES_PER_FLOAT = 4;
     private static final String A_POSITION = "a_Position";
     private static final String A_COLOR = "a_Color";
+    private static final String U_MATRIX = "u_Matrix";
     private static final int COLOR_COMPONENT = 3;
     private static final int STRIDE = (COLOR_COMPONENT + POSITION_COMPONENT_COUNT) * BYTES_PER_FLOAT;
     private int aColorLocation;
@@ -42,6 +45,8 @@ public class AirHockeyRender implements GLSurfaceView.Renderer {
     private final FloatBuffer vertexData;
     private final Context mContext;
     private int mProgram;
+    private float[] projectionMatrix = new float[16];
+    private int uMatrixLocation;
 
 
     public AirHockeyRender(Context context) {
@@ -57,22 +62,18 @@ public class AirHockeyRender implements GLSurfaceView.Renderer {
 
                 0f, 0f, 1f, 1f, 1f,
 
-                -0.5f, -0.5f, 0.7f, 0.7f, 0.7f,
-                0f, -0.5f, 0.7f, 0.7f, 0.7f,
-                0.5f, -0.5f, 0.7f, 0.7f, 0.7f,
-                0.5f, 0f, 0.7f, 0.7f, 0.7f,
-                0.5f, 0.5f, 0.7f, 0.7f, 0.7f,
-                0f, 0.5f, 0.7f, 0.7f, 0.7f,
-                -0.5f, 0.5f, 0.7f, 0.7f, 0.7f,
-                -0.5f, 0f, 0.7f, 0.7f, 0.7f,
-                -0.5f, -0.5f, 0.7f, 0.7f, 0.7f,
+                -0.5f, -0.8f, 0.7f, 0.7f, 0.7f,
+                0.5f, -0.8f, 0.7f, 0.7f, 0.7f,
+                0.5f, 0.8f, 0.7f, 0.7f, 0.7f,
+                -0.5f, 0.8f, 0.7f, 0.7f, 0.7f,
+                -0.5f, -0.8f, 0.7f, 0.7f, 0.7f,
 
 
                 -0.5f, 0f, 1f, 0f, 0f,
                 0.5f, 0f, 0f, 0f, 1f,
 
-                0f, -0.25f, 0f, 0f, 1f,
-                0f, 0.25f, 1f, 0f, 0f
+                0f, -0.4f, 0f, 0f, 1f,
+                0f, 0.4f, 1f, 0f, 0f
         };
 
         vertexData = ByteBuffer.allocateDirect(tableVertices.length * BYTES_PER_FLOAT).order(
@@ -98,6 +99,7 @@ public class AirHockeyRender implements GLSurfaceView.Renderer {
 
         aColorLocation = glGetAttribLocation(mProgram, A_COLOR);
         aPositionLocation = glGetAttribLocation(mProgram, A_POSITION);
+        uMatrixLocation = glGetUniformLocation(mProgram, U_MATRIX);
 
         vertexData.position(0);
         // 关联属性和顶点数据的数组
@@ -117,19 +119,25 @@ public class AirHockeyRender implements GLSurfaceView.Renderer {
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
         glViewport(0, 0, width, height);
+        final float aspectRatio = width > height ? (float) width / height : (float) height / width;
+        if (width > height) {
+            Matrix.orthoM(projectionMatrix, 0, -aspectRatio, aspectRatio, -1f, 1f, -1f, 1f);
+        } else {
+            Matrix.orthoM(projectionMatrix, 0, -1f, 1f, -aspectRatio, aspectRatio, -1f, 1f);
+        }
     }
 
     @Override
     public void onDrawFrame(GL10 gl) {
         glClear(GL_COLOR_BUFFER_BIT);
+        glUniformMatrix4fv(uMatrixLocation, 1, false, projectionMatrix, 0);
+        glDrawArrays(GL_TRIANGLE_FAN, 0, 6);
 
-        glDrawArrays(GL_TRIANGLE_FAN, 0, 10);
+        glDrawArrays(GL_LINES, 6, 2);
 
-        glDrawArrays(GL_LINES, 10, 2);
+        glDrawArrays(GL_POINTS, 8, 1);
 
-        glDrawArrays(GL_POINTS, 12, 1);
-
-        glDrawArrays(GL_POINTS, 13, 1);
+        glDrawArrays(GL_POINTS, 9, 1);
 
 
     }
