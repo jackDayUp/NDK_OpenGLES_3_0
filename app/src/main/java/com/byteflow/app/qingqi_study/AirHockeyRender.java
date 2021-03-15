@@ -53,27 +53,27 @@ public class AirHockeyRender implements GLSurfaceView.Renderer {
         mContext = context;
         // 无论任何时候，如果我们想要表示一个openGL中的物体，都要考虑如何用点，直线以及三角形表示
         float[] tableVertices = {
-//                0f, 0f, 1f, 1f, 1f,
-//                -0.5f, -0.5f, 0.7f, 0.7f, 0.7f,
-//                0.5f, -0.5f, 0.7f, 0.7f, 0.7f,
-//                0.5f, 0.5f, 0.7f, 0.7f, 0.7f,
-//                -0.5f, 0.5f, 0.7f, 0.7f, 0.7f,
-//                -0.5f, -0.5f, 0.7f, 0.7f, 0.7f,
+//                0f,    0f,   0.0f,1.5f, 1f,   1f,   1f,
+//                -0.5f, -0.8f,0.0f,1.0f, 0.7f, 0.7f, 0.7f,
+//                0.5f,  -0.8f,0.0f,1.0f, 0.7f, 0.7f, 0.7f,
+//                0.5f,  0.8f, 0.0f,2.0f, 0.7f, 0.7f, 0.7f,
+//                -0.5f, 0.8f, 0.0f,2.0f, 0.7f, 0.7f, 0.7f,
+//                -0.5f, -0.8f,0.0f,1.0f, 0.7f, 0.7f, 0.7f,
+//                -0.5f, 0f,   0.0f,1.5f, 1f, 0f, 0f,
+//                0.5f,  0f,   0.0f,1.5f, 0f, 0f, 1f,
+//                0f,   -0.4f, 0.0f,1.25f, 0f, 0f, 1f,
+//                0f,   0.4f,  0.0f,1.75f, 1f, 0f, 0f
 
-                0f, 0f, 1f, 1f, 1f,
-
-                -0.5f, -0.8f, 0.7f, 0.7f, 0.7f,
-                0.5f, -0.8f, 0.7f, 0.7f, 0.7f,
-                0.5f, 0.8f, 0.7f, 0.7f, 0.7f,
-                -0.5f, 0.8f, 0.7f, 0.7f, 0.7f,
-                -0.5f, -0.8f, 0.7f, 0.7f, 0.7f,
-
-
-                -0.5f, 0f, 1f, 0f, 0f,
-                0.5f, 0f, 0f, 0f, 1f,
-
-                0f, -0.4f, 0f, 0f, 1f,
-                0f, 0.4f, 1f, 0f, 0f
+                0f,    0f,     1f,   1f,   1f,
+                -0.5f, -0.8f,  0.7f, 0.7f, 0.7f,
+                0.5f,  -0.8f,  0.7f, 0.7f, 0.7f,
+                0.5f,  0.8f,   0.7f, 0.7f, 0.7f,
+                -0.5f, 0.8f,   0.7f, 0.7f, 0.7f,
+                -0.5f, -0.8f,  0.7f, 0.7f, 0.7f,
+                -0.5f, 0f,     1f, 0f, 0f,
+                0.5f,  0f,     0f, 0f, 1f,
+                0f,   -0.4f,    0f, 0f, 1f,
+                0f,   0.4f,     1f, 0f, 0f
         };
 
         vertexData = ByteBuffer.allocateDirect(tableVertices.length * BYTES_PER_FLOAT).order(
