@@ -18,10 +18,12 @@ import static android.opengl.GLES20.glVertexAttribPointer;
 import static android.opengl.GLES20.glViewport;
 
 import android.content.Context;
+import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 
 import com.byteflow.app.R;
+import com.byteflow.app.qingqi_study.util.MatrixHelper;
 import com.byteflow.app.qingqi_study.util.ShaderHelper;
 import com.byteflow.app.qingqi_study.util.TextResourceReader;
 
@@ -48,6 +50,7 @@ public class AirHockeyRender implements GLSurfaceView.Renderer {
     private float[] projectionMatrix = new float[16];
     private int uMatrixLocation;
 
+    private float[] modelMatrix = new float[16];
 
     public AirHockeyRender(Context context) {
         mContext = context;
@@ -64,16 +67,16 @@ public class AirHockeyRender implements GLSurfaceView.Renderer {
 //                0f,   -0.4f, 0.0f,1.25f, 0f, 0f, 1f,
 //                0f,   0.4f,  0.0f,1.75f, 1f, 0f, 0f
 
-                0f,    0f,     1f,   1f,   1f,
-                -0.5f, -0.8f,  0.7f, 0.7f, 0.7f,
-                0.5f,  -0.8f,  0.7f, 0.7f, 0.7f,
-                0.5f,  0.8f,   0.7f, 0.7f, 0.7f,
-                -0.5f, 0.8f,   0.7f, 0.7f, 0.7f,
-                -0.5f, -0.8f,  0.7f, 0.7f, 0.7f,
-                -0.5f, 0f,     1f, 0f, 0f,
-                0.5f,  0f,     0f, 0f, 1f,
-                0f,   -0.4f,    0f, 0f, 1f,
-                0f,   0.4f,     1f, 0f, 0f
+                0f, 0f, 1f, 1f, 1f,
+                -0.5f, -0.8f, 0.7f, 0.7f, 0.7f,
+                0.5f, -0.8f, 0.7f, 0.7f, 0.7f,
+                0.5f, 0.8f, 0.7f, 0.7f, 0.7f,
+                -0.5f, 0.8f, 0.7f, 0.7f, 0.7f,
+                -0.5f, -0.8f, 0.7f, 0.7f, 0.7f,
+                -0.5f, 0f, 1f, 0f, 0f,
+                0.5f, 0f, 0f, 0f, 1f,
+                0f, -0.4f, 0f, 0f, 1f,
+                0f, 0.4f, 1f, 0f, 0f
         };
 
         vertexData = ByteBuffer.allocateDirect(tableVertices.length * BYTES_PER_FLOAT).order(
@@ -119,12 +122,20 @@ public class AirHockeyRender implements GLSurfaceView.Renderer {
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
         glViewport(0, 0, width, height);
-        final float aspectRatio = width > height ? (float) width / height : (float) height / width;
-        if (width > height) {
-            Matrix.orthoM(projectionMatrix, 0, -aspectRatio, aspectRatio, -1f, 1f, -1f, 1f);
-        } else {
-            Matrix.orthoM(projectionMatrix, 0, -1f, 1f, -aspectRatio, aspectRatio, -1f, 1f);
-        }
+//        final float aspectRatio = width > height ? (float) width / height : (float) height / width;
+//        if (width > height) {
+//            Matrix.orthoM(projectionMatrix, 0, -aspectRatio, aspectRatio, -1f, 1f, -1f, 1f);
+//        } else {
+//            Matrix.orthoM(projectionMatrix, 0, -1f, 1f, -aspectRatio, aspectRatio, -1f, 1f);
+//        }
+        MatrixHelper.perspectiveM(projectionMatrix, 45, (float) width / height, 1f, 10f);
+        Matrix.setIdentityM(modelMatrix, 0);
+        Matrix.translateM(modelMatrix, 0, 0f, 0f, -2f);
+        Matrix.translateM(modelMatrix, 0, 0f, 0f, -2.5f);
+        Matrix.rotateM(modelMatrix, 0, -60f,1f, 0f, 0f);
+        final float[] temp = new float[16];
+        Matrix.multiplyMM(temp, 0, projectionMatrix, 0, modelMatrix, 0);
+        System.arraycopy(temp, 0, projectionMatrix, 0, temp.length);
     }
 
     @Override
