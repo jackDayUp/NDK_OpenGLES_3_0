@@ -10,6 +10,7 @@ import java.io.InputStream;
 public class CommonUtils {
     private static final String TAG = "CommonUtils";
 
+
     public static void copyAssetsDirToSDCard(Context context, String assetsDirName, String sdCardPath) {
         Log.d(TAG, "copyAssetsDirToSDCard() called with: context = [" + context + "], assetsDirName = [" + assetsDirName + "], sdCardPath = [" + sdCardPath + "]");
         try {
