@@ -11,6 +11,7 @@ import java.nio.FloatBuffer;
 import javax.microedition.khronos.opengles.GL;
 
 public class VertexArray {
+//    在本地代码中存储顶点数据的
     private final FloatBuffer mFloatBuffer;
 
     public VertexArray(float[] vertexData) {

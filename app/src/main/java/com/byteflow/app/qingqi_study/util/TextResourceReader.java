@@ -11,7 +11,7 @@ import java.io.InputStreamReader;
 import androidx.annotation.RawRes;
 
 public class TextResourceReader {
-    public static String readTextFileFromResource(Context context, @RawRes int resId) {
+    public static String readTextFileFromResource(Context context, int resId) {
         StringBuilder body = new StringBuilder();
         try {
 
